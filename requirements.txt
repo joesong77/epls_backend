@@ -1,0 +1,10 @@
+Flask
+gunicorn
+click
+colorama
+flask-mysql
+Flask-Cors
+pymysql
+Flask-JWT-Extended
+flask-bcrypt
+waitress
