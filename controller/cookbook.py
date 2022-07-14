@@ -30,7 +30,7 @@ def cookbook():
 def page(page_id):
     conn = mysql.connect()
     cursor = conn.cursor(pymysql.cursors.DictCursor)
-    cursor.execute("SELECT m.id ,m.name ,m.img  FROM meal as m LEFT JOIN cookbook ON m.c_id=cookbook.id  AND cookbook.id = %s ",page_id)
+    cursor.execute("SELECT m.id ,m.name ,m.img  FROM meal as m LEFT JOIN cookbook ON m.c_id = cookbook.id  WHERE cookbook.id = %s ",page_id)
     user = cursor.fetchall()
     respone = jsonify(user)
     respone.status_code = 200
