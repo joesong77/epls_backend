@@ -5,42 +5,34 @@ from flask import jsonify
 from flask import Blueprint
 from flask import flash, request
 from app import app
+from flask_bcrypt import Bcrypt
+route_cookbook =Blueprint(("cookbook_page"), __name__)
 
-
-route_comment =Blueprint(("comment_page"), __name__)
-@route_comment.route('/')
-def comment():
+@route_cookbook.route('/')
+def cookbook():
     try:
         conn = mysql.connect()
         cursor = conn.cursor(pymysql.cursors.DictCursor)
-        cursor.execute("SELECT  * FROM  comment ")
+        cursor.execute("SELECT * from cookbook")
         empRows = cursor.fetchall()
+
         respone = jsonify(empRows)
         respone.status_code = 200
-        return respone
+        return respone 
+
     except Exception as e:
         print(e)
     finally:
         cursor.close()
-        conn.close()
 
 
-@route_comment.route('/add', methods=['POST'])
-def add():
-    json = request.json
-    name = json['name']
-    text =json['text']
-    rating=json['rating']
-    class_id =json['class_id']
+@route_cookbook.route('/<int:page_id>')
+def page(page_id):
     conn = mysql.connect()
     cursor = conn.cursor(pymysql.cursors.DictCursor)
-    cursor.execute("INSERT INTO comment(name,text,rating,class_id) VALUES(%s, %s,%s,%s)",(name,text,rating,class_id))
-    conn.commit()
-    respone = jsonify({"message":"新增成功"})
+    cursor.execute("SELECT m.id ,m.name ,m.img  FROM meal as m LEFT JOIN cookbook ON m.c_id=cookbook.id  AND cookbook.id = %s ",page_id)
+    user = cursor.fetchall()
+    respone = jsonify(user)
     respone.status_code = 200
     return respone
-
-
-
-
 
